@@ -1,0 +1,21 @@
+services:
+  ownerservice-postgres:
+    image: postgres:16
+    container_name: ownerservice-postgres
+    environment:
+        POSTGRES_DB: ownerserice
+        POSTGRES_USER: owner_service_admin
+        POSTGRES_PASSWORD: 123456789
+        TZ: Asia/Phnom_Penh
+    ports:
+        - "5445:5432"
+    volumes:
+      - owerservice-pg-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "owner_service_admin", "-d", "ownerserice"]
+      interval: 10s
+      timeout: 5s
+      retries: 20
+    restart: unless-stopped
+volumes:
+  owerservice-pg-data:

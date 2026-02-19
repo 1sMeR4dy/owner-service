@@ -1,3 +1,17 @@
 spring:
   application:
     name: ownerservice
+
+  r2dbc:
+     url: r2dbc:postgresql://localhost:5445/ownerserice
+     username: owner_service_admin
+     password: 123456789
+
+  datasource:
+    url: jdbc:postgresql://localhost:5445/ownerserice
+    username: owner_service_admin
+    password: 123456789
+
+  liquibase:
+    change-log: classpath:db/changelog/db.changelog-master.yaml
+
