@@ -23,8 +23,12 @@ public class OwnerServiceImpl implements OwnerService {
     private final OwnerFactory ownerFactory;
     private final OwnerRegistrationValidator registrationValidator;
     private final OwerRegisterRequestNormalizer normalizer;
+
+
     @Override
     public Mono<OwnerResponse> register(OwnerRegisterRequest request) {
+
+        log.info(" Owner registration request.");
 
         OwnerRegisterRequest normalize =
                 normalizer.normalize(request);
@@ -35,6 +39,7 @@ public class OwnerServiceImpl implements OwnerService {
 
         return registrationValidator.validate(normalize)
                 .then(ownerRepository.save(pending))
+                .doOnSuccess(saved2->log.info(" Owner registration successful. ownerId: {}", saved2.getId()))
                 .map(ownerMapper::toOwnerResponse);
     }
 }
