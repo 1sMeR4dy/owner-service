@@ -6,6 +6,7 @@ import com.rady.ownerservice.exception.BadRequestException;
 import com.rady.ownerservice.repository.OwnerRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import reactor.core.publisher.Mono;
@@ -26,18 +27,20 @@ public class OwnerRegistrationValidator {
     }
 
     private Mono<Void>validateUniqueness(OwnerRegisterRequest request){
-        return checkEmailUniqueness(request.getEmail())
-                .then(checkPhoneUniqueness(request.getPhone()));
+        return Mono.when(
+                checkEmailUniqueness(request.getEmail()),
+                checkPhoneUniqueness(request.getPhone())
+        );
     }
 
 
     private void validateRequiredContact(OwnerRegisterRequest request){
 
-        boolean hasEmail= StringUtils.hasText(request.getEmail().trim());
-        boolean hasPhone= StringUtils.hasText   (request.getPhone().trim());
+        boolean hasEmail= StringUtils.hasText(request.getEmail());
+        boolean hasPhone= StringUtils.hasText(request.getPhone());
 
         if(!hasEmail && !hasPhone){
-            throw new BadRequestException("At least one contact information (email or phone) must be provided.");
+            throw new BadRequestException("Either email or phone must be provided.");
         }
     }
 
@@ -50,7 +53,7 @@ public class OwnerRegistrationValidator {
         return ownerRepository.existsByPhone(phone)
                 .filter(Boolean::booleanValue)
                 .flatMap(exists->Mono.error(
-                        new BadRequestException("Phone Number is already in use.")))
+                        new DataIntegrityViolationException("Phone Number is already in use.")))
                 .then();
     }
 
@@ -63,7 +66,7 @@ public class OwnerRegistrationValidator {
         return ownerRepository.existsByEmail(email)
                 .filter(Boolean::booleanValue)
                 .flatMap(exists->Mono.error(
-                        new BadRequestException("Email is already in use.")))
+                        new DataIntegrityViolationException("Email is already in use.")))
                 .then();
     }
 

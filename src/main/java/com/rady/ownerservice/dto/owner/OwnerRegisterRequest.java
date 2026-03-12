@@ -7,14 +7,23 @@ import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 @Data
-@AtLeastOneContact
+//@AtLeastOneContact
+//public class OwnerRegisterRequest {
+//
+//    @Email(message = "Invalid email format.")
+//    @Size(max = 80, message = "Email not more than 80 characters.")
+//    private String email;
+//
+//    @Size(max = 30, message = "Phone must be <= 30 characters.")
+//    private String phone;
+//}
 public class OwnerRegisterRequest {
 
     @Email(message = "Invalid email format.")
-    @Size(max = 80, message = "Email not more than 80 characters.")
+    @Size(max = 80, message = "Email must not exceed 80 characters.")
     private String email;
 
-    @Size(max = 30, message = "Phone must be <= 30 characters.")
+    @Size(max = 30, message = "Phone must not exceed 30 characters.")
     private String phone;
 }
 
