@@ -55,6 +55,8 @@ public class GlobalExceptionHandler {
                 "Validation Error",message, "/error/validation-error"));
     }
 
+    //Handle unexpected error
+
     @ExceptionHandler(Exception.class)
     public Mono<ProblemDetail>handleGeneric(Exception ex, ServerWebExchange exchange) {
         log.error(ex.getMessage(),exchange.getRequest().getPath(), ex);
